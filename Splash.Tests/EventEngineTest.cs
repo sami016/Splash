@@ -30,6 +30,22 @@ namespace Splash.Tests
             var output = source.Emit(new CounterEventData());
             Assert.AreEqual(2, output.Count);
         }
+        [TestMethod]
+        public void Process_Stop_ShouldPreventSubsequentProcessors()
+        {
+            var source = new Source(_engine);
+            source.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count++;
+                evt.Stop();
+            });
+            source.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count++;
+            });
+            var output = source.Emit(new CounterEventData());
+            Assert.AreEqual(1, output.Count);
+        }
 
         [TestMethod]
         public void Process_SingleSource_ShouldRunProcessorsInCorrectOrder()
@@ -69,6 +85,31 @@ namespace Splash.Tests
             // Now, the output should only be 1, since returned result is only for the current node.
             Assert.AreEqual(1, output.Count);
             Assert.IsTrue(downstreamHasRun);
+        }
+
+
+        [TestMethod]
+        public void Process_SourceFlowBlockDownstream_ShouldNotCallDownstream()
+        {
+            var downstreamHasRun = false;
+
+            var source = new Source(_engine);
+            var downstream = new Source(_engine);
+            source.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count++;
+                evt.BlockDownstream();
+            });
+            source.FlowInto(downstream);
+            downstream.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count *= 10;
+                downstreamHasRun = true;
+            });
+            var output = source.Emit(new CounterEventData(), ResultMode.IncludeDownstreamLast);
+            // Now, the output should only be 1, since returned result is only for the current node.
+            Assert.AreEqual(1, output.Count);
+            Assert.IsFalse(downstreamHasRun);
         }
 
 

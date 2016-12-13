@@ -25,12 +25,24 @@ namespace Splash
             foreach (var processor in current.RegisteredProcessors<TEventData>())
             {
                 processor(data, evnt);
+                // If a stop if requested, execution terminates immediately.
+                if (evnt.IsStopped)
+                {
+                    return data;
+                }
             }
+            // After running all processors, the downstream may be blocked.
+            if (evnt.IsBlocked)
+            {
+                return data;
+            }
+            // Continue on recursively downstream.
             TEventData lastResult = data;
             foreach (var node in current.DownstreamNodes())
             {
                 lastResult = Process<TEventData>(node, data, resultMode);
             }
+            // Handle different result modes.
             switch(resultMode)
             {
                 case ResultMode.OriginOnlyResult:
