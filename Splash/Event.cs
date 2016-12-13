@@ -10,18 +10,18 @@ namespace Splash
     public class Event<TEventData> : IEvent
     {
 
-        private ISource _origin;
-        private ISource _source;
+        private ISourceNode _origin;
+        private ISourceNode _source;
 
-        public Event(ISource origin, ISource source)
+        public Event(ISourceNode origin, ISourceNode source)
         {
             _origin = origin;
             _source = source;
         }
 
-        public ISource Origin => _origin;
+        public ISourceNode Origin => _origin;
 
-        public ISource Source => _source;
+        public ISourceNode Source => _source;
 
         public bool IsStopped { get; private set; }
         public bool IsBlocked { get; private set; }

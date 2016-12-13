@@ -21,11 +21,11 @@ namespace Splash.Interfaces
         /// <summary>
         /// Get the source the event was originally emitted at.
         /// </summary>
-        ISource Origin { get; }
+        ISourceNode Origin { get; }
         
         /// <summary>
         /// Get the source the event is currently flowing through.
         /// </summary>
-        ISource Source { get; }
+        ISourceNode Source { get; }
     }
 }

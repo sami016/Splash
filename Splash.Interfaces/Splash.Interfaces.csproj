@@ -44,7 +44,6 @@
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventEngine.cs" />
     <Compile Include="ResultMode.cs" />
-    <Compile Include="ISource.cs" />
     <Compile Include="ISourceNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
