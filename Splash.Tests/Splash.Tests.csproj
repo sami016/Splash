@@ -50,9 +50,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AlertEventData.cs" />
     <Compile Include="CounterEventData.cs" />
+    <Compile Include="EmissionFlowTest.cs" />
     <Compile Include="EventEngineTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepeatFlowTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splash.Interfaces\Splash.Interfaces.csproj">

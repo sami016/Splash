@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventProcessor.cs" />
-    <Compile Include="IEvent.cs" />
+    <Compile Include="FlowType.cs" />
+    <Compile Include="IEventContext.cs" />
     <Compile Include="IEventEngine.cs" />
     <Compile Include="ResultMode.cs" />
     <Compile Include="ISourceNode.cs" />

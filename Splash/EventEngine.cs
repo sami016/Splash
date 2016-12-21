@@ -19,9 +19,9 @@ namespace Splash
         private TEventData ProcessRecursive<TEventData>(ISourceNode origin, ISourceNode current, TEventData eventData, ResultMode resultMode)
             where TEventData : class, ICloneable
         {
-            Event evnt = new Event(origin, origin);
+            EventContext evnt = new EventContext(origin, origin, this);
             TEventData data = eventData.Clone() as TEventData;
-
+            
             foreach (var processor in current.RegisteredProcessors<TEventData>())
             {
                 processor(data, evnt);
@@ -36,9 +36,9 @@ namespace Splash
             {
                 return data;
             }
-            // Continue on recursively downstream.
+            // Continue on recursively downstream to repeater nodes.
             TEventData lastResult = data;
-            foreach (var node in current.DownstreamNodes())
+            foreach (var node in current.DownstreamNodes(FlowType.Repeat))
             {
                 lastResult = Process<TEventData>(node, data, resultMode);
             }

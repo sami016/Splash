@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Event.cs" />
+    <Compile Include="EventContext.cs" />
     <Compile Include="EventEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceNode.cs" />

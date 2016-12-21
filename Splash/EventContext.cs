@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 
 namespace Splash
 {
-    public class Event : IEvent
+    public class EventContext : IEventContext
     {
 
         private ISourceNode _origin;
         private ISourceNode _source;
-
-        public Event(ISourceNode origin, ISourceNode source)
+        private IEventEngine _engine;
+        
+        public EventContext(ISourceNode origin, ISourceNode source, IEventEngine engine)
         {
             _origin = origin;
             _source = source;
+            _engine = engine;
         }
 
         public ISourceNode Origin => _origin;
@@ -34,6 +36,15 @@ namespace Splash
         public void Stop()
         {
             IsStopped = true;
+        }
+
+        public void Emit<TEventData>(TEventData eventData)
+            where TEventData : class, ICloneable
+        {
+            foreach (var node in _source.DownstreamNodes(FlowType.Emit))
+            {
+                _engine.Process<TEventData>(node, eventData, ResultMode.OriginOnlyResult);
+            }
         }
     }
 }

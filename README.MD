@@ -10,6 +10,20 @@ Each event type has a mutable event data type which is used to store both inputs
 Both the inputs and outputs may be modified, the effects of which will be seen by all downstream and subsequent event processors.
 Due to the behaviour of forking streams, event data must implement the ICloneable interface so that it can be copied without seperate forks having side effects.
 
+## Flow types
+
+At present there are two possible types of flows between nodes: Repeat flows and emission flows.
+
+ - Repeat flows work by passing all events downstream automatically. Firing an event on a source will also mean the event is passed to all downstream nodes that are connected via a repeater flow relationship.
+ - Emission flows work by restricting the flow of events. A nodes processors may call `Emit` on the event context which fires events on all downstream nodes connected via an emit flow relationship. Note: This allows you to change event type, or fire many downstream events for one upstream event.
+
+ ```
+ // FlowType.Repeat
+ // FlowType.Emit
+
+ sourceNode1.FlowInto(sourceNode2, FlowType.Emit);
+ ```
+
 ## Examples
 
 ### Creating a single source
@@ -32,7 +46,7 @@ var factory = new SourceFactory();
 
 var source = factory.Create();
 var downstream = factory.Create();
-source.FlowInto(downstream);
+source.FlowInto(downstream, FlowType.Repeat);
 
 source.Register<CounterEventData>((data, evt) =>
 {

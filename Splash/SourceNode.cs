@@ -10,28 +10,31 @@ namespace Splash
     public class SourceNode : ISourceNode
     {
         private IDictionary<Type, IList<object>> processors = new Dictionary<Type, IList<object>>();
-        private IList<ISourceNode> _downstream = new List<ISourceNode>();
         private IEventEngine _engine;
+
+        private IList<ISourceNode> _downstreamRepeat = new List<ISourceNode>();
+        private IList<ISourceNode> _downstreamEmit= new List<ISourceNode>();
 
         public SourceNode(IEventEngine engine)
         {
             _engine = engine;
         }
 
-        public IEnumerable<ISourceNode> DownstreamNodes()
+        public IEnumerable<ISourceNode> DownstreamNodes(FlowType flowType)
         {
-            return _downstream;
+            if (flowType == FlowType.Repeat)
+            {
+                return _downstreamRepeat;
+            }else
+            {
+                return _downstreamEmit;
+            }
         }
 
         public TEventData Fire<TEventData>(TEventData eventData, ResultMode resultMode = ResultMode.OriginOnlyResult)
             where TEventData : class, ICloneable
         {
             return _engine.Process<TEventData>(this, eventData, resultMode);
-        }
-
-        public void FlowInto(ISourceNode source)
-        {
-            _downstream.Add(source);
         }
 
         public void Register<TEventData>(EventProcessor<TEventData> eventProcessor) 
@@ -55,6 +58,16 @@ namespace Splash
             }
             return processors[type].Cast<EventProcessor<TEventData>>();
         }
-        
+
+        public void FlowInto(ISourceNode source, FlowType flowType)
+        {
+            if (flowType == FlowType.Repeat)
+            {
+                _downstreamRepeat.Add(source);
+            }else
+            {
+                _downstreamEmit.Add(source);
+            }
+        }
     }
 }

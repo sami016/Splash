@@ -32,7 +32,8 @@ namespace Splash.Interfaces
         /// Links the source to a downstream source.
         /// </summary>
         /// <param name="source">downstream source</param>
-        void FlowInto(ISourceNode source);
+        /// <param name="flowType">flow type</param>
+        void FlowInto(ISourceNode source, FlowType flowType);
 
         /// <summary>
         /// Gets the set of registered event processors for a given event data type.
@@ -45,7 +46,8 @@ namespace Splash.Interfaces
         /// <summary>
         /// Get the set of downstream nodes.
         /// </summary>
+        /// <param name="flowType">flow type</param>
         /// <returns>set of downstream nodes</returns>
-        IEnumerable<ISourceNode> DownstreamNodes();
+        IEnumerable<ISourceNode> DownstreamNodes(FlowType flowType);
     }
 }

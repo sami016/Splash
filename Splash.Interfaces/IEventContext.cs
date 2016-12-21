@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Splash.Interfaces
 {
-    public interface IEvent
+    /// <summary>
+    /// Event context.
+    /// </summary>
+    public interface IEventContext
     {
         /// <summary>
         /// Stops the event from being processed further.
@@ -27,5 +30,11 @@ namespace Splash.Interfaces
         /// Get the source the event is currently flowing through.
         /// </summary>
         ISourceNode Source { get; }
+
+        /// <summary>
+        /// Emits an event to be handled by downstream emit nodes.
+        /// </summary>
+        void Emit<TEventData>(TEventData eventData)
+            where TEventData : class, ICloneable;
     }
 }
