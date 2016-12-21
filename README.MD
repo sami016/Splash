@@ -4,7 +4,7 @@ An event flow library
 
 ## Simple idea, design decisions
 
-An event system where events are emitted onto source nodes, which may then flow into other nodes in a cascading graph.
+An event system where events are fired onto source nodes, which may then flow into other nodes in a cascading graph.
 
 Each event type has a mutable event data type which is used to store both inputs and results. 
 Both the inputs and outputs may be modified, the effects of which will be seen by all downstream and subsequent event processors.
@@ -22,7 +22,7 @@ source.Register<CounterEventData>((data, evt) =>
 {
 	data.Count++;
 });
-var result = source.Emit(new CounterEventData());
+var result = source.Fire(new CounterEventData());
 ```
 
 ### Creating a tree of sources
@@ -44,7 +44,7 @@ downstream.Register<CounterEventData>((data, evt) =>
     data.Count *= 10;
 });
 // Result will have count 20 - we've flagged the engine to take the result from the last downstream source.
-var output = source.Emit(new CounterEventData(), ResultMode.IncludeDownstreamLast);
+var output = source.Fire(new CounterEventData(), ResultMode.IncludeDownstreamLast);
 // We can also take the result from the source node only by using ResultMode.OriginOnlyResult
 ```
 

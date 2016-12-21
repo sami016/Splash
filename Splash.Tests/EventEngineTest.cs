@@ -18,7 +18,7 @@ namespace Splash.Tests
         [TestMethod]
         public void Process_SingleSource_ShouldRunProcessors()
         {
-            var source = new Source(_engine);
+            var source = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -27,13 +27,32 @@ namespace Splash.Tests
             {
                 data.Count++;
             });
-            var output = source.Emit(new CounterEventData());
+            var output = source.Fire(new CounterEventData());
             Assert.AreEqual(2, output.Count);
         }
+
+
+        [TestMethod]
+        public void Process_ExtensionFire_ShouldRunProcessors()
+        {
+            var source = new SourceNode(_engine);
+            source.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count++;
+            });
+            source.Register<CounterEventData>((data, evt) =>
+            {
+                data.Count++;
+            });
+            object eventData = new CounterEventData();
+            var output = source.FireDynamic(eventData);
+            Assert.AreEqual(2, (output as CounterEventData).Count);
+        }
+
         [TestMethod]
         public void Process_Stop_ShouldPreventSubsequentProcessors()
         {
-            var source = new Source(_engine);
+            var source = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -43,14 +62,14 @@ namespace Splash.Tests
             {
                 data.Count++;
             });
-            var output = source.Emit(new CounterEventData());
+            var output = source.Fire(new CounterEventData());
             Assert.AreEqual(1, output.Count);
         }
 
         [TestMethod]
         public void Process_SingleSource_ShouldRunProcessorsInCorrectOrder()
         {
-            var source = new Source(_engine);
+            var source = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -59,7 +78,7 @@ namespace Splash.Tests
             {
                 data.Count *= 10;
             });
-            var output = source.Emit(new CounterEventData());
+            var output = source.Fire(new CounterEventData());
             Assert.AreEqual(10, output.Count);
         }
 
@@ -69,8 +88,8 @@ namespace Splash.Tests
         {
             var downstreamHasRun = false;
 
-            var source = new Source(_engine);
-            var downstream = new Source(_engine);
+            var source = new SourceNode(_engine);
+            var downstream = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -81,7 +100,7 @@ namespace Splash.Tests
                 data.Count *= 10;
                 downstreamHasRun = true;
             });
-            var output = source.Emit(new CounterEventData());
+            var output = source.Fire(new CounterEventData());
             // Now, the output should only be 1, since returned result is only for the current node.
             Assert.AreEqual(1, output.Count);
             Assert.IsTrue(downstreamHasRun);
@@ -93,8 +112,8 @@ namespace Splash.Tests
         {
             var downstreamHasRun = false;
 
-            var source = new Source(_engine);
-            var downstream = new Source(_engine);
+            var source = new SourceNode(_engine);
+            var downstream = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -106,7 +125,7 @@ namespace Splash.Tests
                 data.Count *= 10;
                 downstreamHasRun = true;
             });
-            var output = source.Emit(new CounterEventData(), ResultMode.IncludeDownstreamLast);
+            var output = source.Fire(new CounterEventData(), ResultMode.IncludeDownstreamLast);
             // Now, the output should only be 1, since returned result is only for the current node.
             Assert.AreEqual(1, output.Count);
             Assert.IsFalse(downstreamHasRun);
@@ -118,9 +137,9 @@ namespace Splash.Tests
         {
             var downstreamHasRun = false;
 
-            var source = new Source(_engine);
-            var downstream1 = new Source(_engine);
-            var downstream2 = new Source(_engine);
+            var source = new SourceNode(_engine);
+            var downstream1 = new SourceNode(_engine);
+            var downstream2 = new SourceNode(_engine);
             source.Register<CounterEventData>((data, evt) =>
             {
                 data.Count++;
@@ -136,7 +155,7 @@ namespace Splash.Tests
             {
                 data.Count *= 10;
             });
-            var output = source.Emit(new CounterEventData(), ResultMode.IncludeDownstreamLast);
+            var output = source.Fire(new CounterEventData(), ResultMode.IncludeDownstreamLast);
             // Now, the output should only be 1, since returned result is only for the current node.
             Assert.AreEqual(10, output.Count);
             Assert.IsTrue(downstreamHasRun);

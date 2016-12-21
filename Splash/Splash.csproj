@@ -43,7 +43,7 @@
     <Compile Include="Event.cs" />
     <Compile Include="EventEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source.cs" />
+    <Compile Include="SourceNode.cs" />
     <Compile Include="SourceFactory.cs" />
   </ItemGroup>
   <ItemGroup>

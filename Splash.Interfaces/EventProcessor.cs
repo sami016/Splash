@@ -13,6 +13,6 @@ namespace Splash.Interfaces
     /// <typeparam name="TEventData">event data type</typeparam>
     /// <param name="eventData">event data</param>
     /// <param name="evnt">event</param>
-    public delegate void EventProcessor<TEventData>(TEventData eventData, IEvent evnt)
+    public delegate void EventProcessor<in TEventData>(TEventData eventData, IEvent evnt)
             where TEventData : ICloneable;
 }

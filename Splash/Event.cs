@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Splash
 {
-    public class Event<TEventData> : IEvent
+    public class Event : IEvent
     {
 
         private ISourceNode _origin;

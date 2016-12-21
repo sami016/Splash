@@ -18,7 +18,7 @@ namespace Splash
 
         public ISourceNode Create()
         {
-            return new Source(_engine);
+            return new SourceNode(_engine);
         }
     }
 }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Splash
 {
-    public class Source : ISourceNode
+    public class SourceNode : ISourceNode
     {
         private IDictionary<Type, IList<object>> processors = new Dictionary<Type, IList<object>>();
         private IList<ISourceNode> _downstream = new List<ISourceNode>();
         private IEventEngine _engine;
 
-        public Source(IEventEngine engine)
+        public SourceNode(IEventEngine engine)
         {
             _engine = engine;
         }
@@ -23,7 +23,7 @@ namespace Splash
             return _downstream;
         }
 
-        public TEventData Emit<TEventData>(TEventData eventData, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        public TEventData Fire<TEventData>(TEventData eventData, ResultMode resultMode = ResultMode.OriginOnlyResult)
             where TEventData : class, ICloneable
         {
             return _engine.Process<TEventData>(this, eventData, resultMode);

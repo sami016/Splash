@@ -19,7 +19,7 @@ namespace Splash
         private TEventData ProcessRecursive<TEventData>(ISourceNode origin, ISourceNode current, TEventData eventData, ResultMode resultMode)
             where TEventData : class, ICloneable
         {
-            Event<TEventData> evnt = new Event<TEventData>(origin, origin);
+            Event evnt = new Event(origin, origin);
             TEventData data = eventData.Clone() as TEventData;
 
             foreach (var processor in current.RegisteredProcessors<TEventData>())
