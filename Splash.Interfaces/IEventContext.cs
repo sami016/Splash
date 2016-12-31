@@ -34,7 +34,8 @@ namespace Splash.Interfaces
         /// <summary>
         /// Emits an event to be handled by downstream emit nodes.
         /// </summary>
-        void Emit<TEventData>(TEventData eventData)
+        void Emit<TEventData>(TEventData eventData, EventMode eventMode = EventMode.Immutable)
             where TEventData : class, ICloneable;
+
     }
 }

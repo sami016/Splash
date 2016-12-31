@@ -10,47 +10,48 @@ namespace Splash
 {
     public class EventEngine : IEventEngine
     {
-        public TEventData Process<TEventData>(ISourceNode origin, TEventData eventData, ResultMode resultMode)
+        public void Process<TEventData>(ISourceNode origin, TEventData eventData, EventMode resultMode)
             where TEventData : class, ICloneable
         {
-            return ProcessRecursive(origin, origin, eventData, resultMode);
+            ProcessRecursive(origin, origin, eventData, resultMode);
         }
 
-        private TEventData ProcessRecursive<TEventData>(ISourceNode origin, ISourceNode current, TEventData eventData, ResultMode resultMode)
+        private void ProcessRecursive<TEventData>(ISourceNode origin, ISourceNode current, TEventData eventData, EventMode eventMode)
             where TEventData : class, ICloneable
         {
-            EventContext evnt = new EventContext(origin, origin, this);
-            TEventData data = eventData.Clone() as TEventData;
-            
+            EventContext context = new EventContext(origin, origin, this);
+
             foreach (var processor in current.RegisteredProcessors<TEventData>())
             {
-                processor(data, evnt);
+                var data = eventMode == EventMode.Immutable
+                    ? eventData.Clone() as TEventData
+                    : eventData;
+                processor(data, context);
                 // If a stop if requested, execution terminates immediately.
-                if (evnt.IsStopped)
+                if (context.IsStopped)
                 {
-                    return data;
+                    return;
                 }
             }
             // After running all processors, the downstream may be blocked.
-            if (evnt.IsBlocked)
+            if (context.IsBlocked)
             {
-                return data;
+                return;
             }
-            // Continue on recursively downstream to repeater nodes.
-            TEventData lastResult = data;
+            // Continue onto downstream nodes.
+            FireDownstream(origin, current, eventData, eventMode, eventMode != EventMode.Mutable_Sequential);
+        }
+
+        private void FireDownstream<TEventData>(ISourceNode origin, ISourceNode current, TEventData eventData, EventMode eventMode, bool parallel)
+            where TEventData : class, ICloneable
+        {
             foreach (var node in current.DownstreamNodes(FlowType.Repeat))
             {
-                lastResult = Process<TEventData>(node, data, resultMode);
+                var eventDataToUse = parallel
+                    ? eventData.Clone() as TEventData
+                    : eventData;
+                ProcessRecursive<TEventData>(origin, node, eventDataToUse, eventMode);
             }
-            // Handle different result modes.
-            switch(resultMode)
-            {
-                case ResultMode.OriginOnlyResult:
-                    return data;
-                case ResultMode.IncludeDownstreamLast:
-                    return lastResult;
-            }
-            return lastResult;
         }
     }
 }

@@ -15,8 +15,8 @@ namespace Splash.Interfaces
         /// </summary>
         /// <typeparam name="TEventData">event data type</typeparam>
         /// <param name="eventData">event data</param>
-        /// <returns>output processed event data after processors have been applied to this source.</returns>
-        TEventData Fire<TEventData>(TEventData eventData, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        /// <param name="eventMode">event mode</param>
+        void Fire<TEventData>(TEventData eventData, EventMode eventMode = EventMode.Immutable)
             where TEventData : class, ICloneable;
 
         /// <summary>

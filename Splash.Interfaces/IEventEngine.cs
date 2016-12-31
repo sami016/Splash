@@ -8,7 +8,7 @@ namespace Splash.Interfaces
 {
     public interface IEventEngine
     {
-        TEventData Process<TEventData>(ISourceNode node, TEventData input, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        void Process<TEventData>(ISourceNode node, TEventData input, EventMode eventMode)
             where TEventData : class, ICloneable;
     }
 }

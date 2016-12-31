@@ -38,12 +38,12 @@ namespace Splash
             IsStopped = true;
         }
 
-        public void Emit<TEventData>(TEventData eventData)
+        public void Emit<TEventData>(TEventData eventData, EventMode eventMode = EventMode.Immutable)
             where TEventData : class, ICloneable
         {
             foreach (var node in _source.DownstreamNodes(FlowType.Emit))
             {
-                _engine.Process<TEventData>(node, eventData, ResultMode.OriginOnlyResult);
+                _engine.Process<TEventData>(node, eventData, eventMode);
             }
         }
     }

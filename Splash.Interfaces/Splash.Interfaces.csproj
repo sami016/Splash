@@ -44,7 +44,7 @@
     <Compile Include="FlowType.cs" />
     <Compile Include="IEventContext.cs" />
     <Compile Include="IEventEngine.cs" />
-    <Compile Include="ResultMode.cs" />
+    <Compile Include="EventMode.cs" />
     <Compile Include="ISourceNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceNodeExtensions.cs" />

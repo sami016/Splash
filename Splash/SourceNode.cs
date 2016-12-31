@@ -31,10 +31,10 @@ namespace Splash
             }
         }
 
-        public TEventData Fire<TEventData>(TEventData eventData, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        public void Fire<TEventData>(TEventData eventData, EventMode eventMode = EventMode.Immutable)
             where TEventData : class, ICloneable
         {
-            return _engine.Process<TEventData>(this, eventData, resultMode);
+            _engine.Process<TEventData>(this, eventData, eventMode);
         }
 
         public void Register<TEventData>(EventProcessor<TEventData> eventProcessor) 

@@ -21,14 +21,14 @@ namespace Splash.Interfaces
         /// <param name="sourceNode">source node</param>
         /// <param name="eventType">event type</param>
         /// <param name="eventDataResultMode">event data instance</param>
-        /// <param name="resultMode">result mode</param>
+        /// <param name="eventMode">result mode</param>
         /// <returns>event output</returns>
-        public static object FireDynamic(this ISourceNode sourceNode, Type eventType, object eventDataResultMode, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        public static object FireDynamic(this ISourceNode sourceNode, Type eventType, object eventDataResultMode, EventMode eventMode = EventMode.Immutable)
         {
             object[] parameters = new object[]
             {
                 eventDataResultMode,
-                resultMode
+                eventMode
             };
             return fireMethod.MakeGenericMethod(eventType)
                 .Invoke(sourceNode, parameters);
@@ -42,10 +42,10 @@ namespace Splash.Interfaces
         /// <param name="eventDataResultMode">event data instance</param>
         /// <param name="resultMode">result mode</param>
         /// <returns>event output</returns>
-        public static object FireDynamic(this ISourceNode sourceNode, object eventDataResultMode, ResultMode resultMode = ResultMode.OriginOnlyResult)
+        public static object FireDynamic(this ISourceNode sourceNode, object eventDataResultMode, EventMode eventMode = EventMode.Immutable)
         {
             var eventType = eventDataResultMode.GetType();
-            return sourceNode.FireDynamic(eventType, eventDataResultMode, resultMode);
+            return sourceNode.FireDynamic(eventType, eventDataResultMode, eventMode);
         }
     }
 }
