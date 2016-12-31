@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Splash.Interfaces;
+using Xunit;
+using FluentAssertions;
 
 namespace Splash.Tests
 {
-    [TestClass]
+    
     public class EmissionFlowTest : EventEngineTest
     {
-        [TestMethod]
+        [Fact]
         public void EmitFlow_SingleDownstream_EmissionShouldWork()
         {
             bool downstreamCalled = false;
@@ -38,8 +40,8 @@ namespace Splash.Tests
                 throw new Exception("This shouldn't be called.");
             });
 
-            var output = source.Fire(new CounterEventData());
-            Assert.AreEqual(downstreamCalled, true);
+            source.Fire(new CounterEventData());
+            downstreamCalled.Should().BeTrue();
         }
     }
 }
